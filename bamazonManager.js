@@ -20,7 +20,7 @@ const tasks = () => {
             name: "query",
             type: "list",
             message: " Hello Manger. What would you like to do?",
-            choices: [" View Products for Sale", " View Low Inventory", " Add to Inventory", " Add New Product", "Exit"]
+            choices: [" View Products for Sale", " View Low Inventory", " Add to Inventory", " Add New Product", " Exit"]
         }
     ]).then((task) => {
         switch (task.query) {
