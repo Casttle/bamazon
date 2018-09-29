@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const cTable = require('console.table');
-var inquirer = require("inquirer");
+const inquirer = require("inquirer");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -9,25 +9,25 @@ const connection = mysql.createConnection({
     password: "",
     database: "bamazon_db"
 });
-var totalCost = 0;
+let totalCost = 0;
 
 connection.connect((err) => {
     if (err) throw err;
     console.log("\n-----------Welcome to BAMAZON!!--------------")
 });
-function logTable() {
-        connection.query('SELECT * FROM products', (queryErr, queryRes) => {
-            if (queryErr) throw queryErr;
-            const table = cTable.getTable("           Bamazon Item Listings", queryRes);
-            console.log("\n");
-            console.log(table);
-            howMayIhelpYou();
-        });
-    
+const logTable = () => {
+    connection.query('SELECT * FROM products', (queryErr, queryRes) => {
+        if (queryErr) throw queryErr;
+        const table = cTable.getTable("           Bamazon Item Listings", queryRes);
+        console.log("\n");
+        console.log(table);
+        howMayIhelpYou();
+    });
+
 };
 logTable();
 
-function howMayIhelpYou() {
+const howMayIhelpYou = () => {
     inquirer.prompt([
         {
             name: "id",
@@ -51,7 +51,7 @@ function howMayIhelpYou() {
                 return false;
             }
         }
-    ]).then(function (checkOut) {
+    ]).then((checkOut) => {
         connection.query('SELECT * FROM products', (queryErr, queryRes) => {
             if (queryErr) throw queryErr;
             const itemSelected = queryRes[checkOut.id - 1];
@@ -61,7 +61,7 @@ function howMayIhelpYou() {
                 console.log("\nWe're sorry. The demand is to high for us to handle.\n");
                 howMayIhelpYou();
             } else {
-                var query = connection.query("UPDATE products SET ? WHERE ?",
+                let query = connection.query("UPDATE products SET ? WHERE ?",
                     [
                         {
                             stock_quantity: difference
@@ -78,7 +78,7 @@ function howMayIhelpYou() {
         });
     });
 };
-function buyAgain() {
+const buyAgain = () => {
     inquirer.prompt([
         {
             name: "goagain",
@@ -86,11 +86,11 @@ function buyAgain() {
             message: "Would you like to buy another item?",
             default: true
         }
-    ]).then(function (again) {
+    ]).then((again) => {
         if (again.goagain) {
             logTable();
         } else {
-            console.log("\nThank you for shoping Bamazon!\n\nYour total bill today is $"+ totalCost.toFixed(2) + "\n\nCome back soon.");
+            console.log("\nThank you for shoping Bamazon!\n\nYour total bill today is $" + totalCost.toFixed(2) + "\n\nCome back soon.");
             connection.end();
         }
     });
